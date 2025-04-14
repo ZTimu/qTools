@@ -1,0 +1,421 @@
+<div class="tool-container">
+    <div class="tool-header">
+        <h2>Temperature & Mass Conversion</h2>
+        <p>Convert between different temperature and mass units</p>
+    </div>
+
+    <div class="tool-content">
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="temperature">Temperature</button>
+            <button class="tab-btn" data-tab="mass">Mass</button>
+        </div>
+
+        <div class="tab-content" id="temperature-tab">
+            <form id="temperatureForm" class="conversion-form">
+                <div class="form-group">
+                    <label for="tempValue">Value</label>
+                    <input type="number" id="tempValue" name="value" step="0.01" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="fromTempUnit">From</label>
+                        <select id="fromTempUnit" name="fromUnit" required>
+                            <option value="celsius">Celsius (°C)</option>
+                            <option value="fahrenheit">Fahrenheit (°F)</option>
+                            <option value="kelvin">Kelvin (K)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group half">
+                        <label for="toTempUnit">To</label>
+                        <select id="toTempUnit" name="toUnit" required>
+                            <option value="fahrenheit">Fahrenheit (°F)</option>
+                            <option value="celsius">Celsius (°C)</option>
+                            <option value="kelvin">Kelvin (K)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button type="submit" class="convert-btn">Convert</button>
+            </form>
+            
+            <div class="conversion-result" id="tempResult" style="display: none;">
+                <h3>Conversion Result</h3>
+                <div class="result-box">
+                    <p id="tempConversionText" class="result-text"></p>
+                    <p id="tempFormula" class="formula-text"></p>
+                </div>
+            </div>
+            
+            <div class="error-message" id="tempError" style="display: none; color: var(--error-color); margin-top: 16px;"></div>
+        </div>
+
+        <div class="tab-content" id="mass-tab" style="display: none;">
+            <form id="massForm" class="conversion-form">
+                <div class="form-group">
+                    <label for="massValue">Value</label>
+                    <input type="number" id="massValue" name="value" step="0.01" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="fromMassUnit">From</label>
+                        <select id="fromMassUnit" name="fromUnit" required>
+                            <option value="kg">Kilogram (kg)</option>
+                            <option value="g">Gram (g)</option>
+                            <option value="mg">Milligram (mg)</option>
+                            <option value="lb">Pound (lb)</option>
+                            <option value="oz">Ounce (oz)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group half">
+                        <label for="toMassUnit">To</label>
+                        <select id="toMassUnit" name="toUnit" required>
+                            <option value="g">Gram (g)</option>
+                            <option value="kg">Kilogram (kg)</option>
+                            <option value="mg">Milligram (mg)</option>
+                            <option value="lb">Pound (lb)</option>
+                            <option value="oz">Ounce (oz)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button type="submit" class="convert-btn">Convert</button>
+            </form>
+            
+            <div class="conversion-result" id="massResult" style="display: none;">
+                <h3>Conversion Result</h3>
+                <div class="result-box">
+                    <p id="massConversionText" class="result-text"></p>
+                    <p id="massFormula" class="formula-text"></p>
+                </div>
+            </div>
+            
+            <div class="error-message" id="massError" style="display: none; color: var(--error-color); margin-top: 16px;"></div>
+        </div>
+    </div>
+    
+    <div class="back-link">
+        <a href="/dashboard">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get tab elements
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    // Get form elements
+    const tempForm = document.getElementById('temperatureForm');
+    const massForm = document.getElementById('massForm');
+    
+    // Get result elements
+    const tempResult = document.getElementById('tempResult');
+    const massResult = document.getElementById('massResult');
+    const tempError = document.getElementById('tempError');
+    const massError = document.getElementById('massError');
+    
+    // Tab switching functionality
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active class from all buttons
+            tabBtns.forEach(b => b.classList.remove('active'));
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            // Hide all tab contents
+            tabContents.forEach(content => {
+                content.style.display = 'none';
+            });
+            
+            // Show the selected tab content
+            const tabId = this.getAttribute('data-tab');
+            document.getElementById(`${tabId}-tab`).style.display = 'block';
+        });
+    });
+    
+    // Temperature conversion functionality
+    tempForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Get form values
+        const value = parseFloat(document.getElementById('tempValue').value);
+        const fromUnit = document.getElementById('fromTempUnit').value;
+        const toUnit = document.getElementById('toTempUnit').value;
+        const submitButton = this.querySelector('button[type="submit"]');
+        
+        // Clear previous states
+        tempResult.style.display = 'none';
+        tempError.style.display = 'none';
+        tempError.textContent = '';
+        
+        // Show loading state
+        const originalText = submitButton.textContent;
+        submitButton.textContent = 'Converting...';
+        submitButton.disabled = true;
+        
+        try {
+            // Create request data
+            const requestData = {
+                value: value,
+                fromUnit: fromUnit,
+                toUnit: toUnit
+            };
+            
+            // Send API request
+            const response = await fetch(getApiUrl(CONFIG.ENDPOINTS.TOOLS.CONVERT_TEMPERATURE), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            });
+            
+            // Reset button state
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
+            
+            if (!response.ok) {
+                throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Display the conversion result
+                const tempConversionText = document.getElementById('tempConversionText');
+                const tempFormula = document.getElementById('tempFormula');
+                
+                // Format units for display
+                const fromSymbol = getUnitSymbol(fromUnit);
+                const toSymbol = getUnitSymbol(toUnit);
+                
+                tempConversionText.textContent = `${value} ${fromSymbol} = ${data.result.toFixed(4)} ${toSymbol}`;
+                tempFormula.textContent = `Formula: ${getTemperatureFormula(fromUnit, toUnit)}`;
+                tempResult.style.display = 'block';
+            } else {
+                throw new Error(data.error || 'Failed to convert temperature');
+            }
+        } catch (error) {
+            console.error('Error converting temperature:', error);
+            
+            // Show error message
+            tempError.textContent = 'Error: ' + (error.message || 'Please try again later');
+            tempError.style.display = 'block';
+        }
+    });
+    
+    // Mass conversion functionality
+    massForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Get form values
+        const value = parseFloat(document.getElementById('massValue').value);
+        const fromUnit = document.getElementById('fromMassUnit').value;
+        const toUnit = document.getElementById('toMassUnit').value;
+        const submitButton = this.querySelector('button[type="submit"]');
+        
+        // Clear previous states
+        massResult.style.display = 'none';
+        massError.style.display = 'none';
+        massError.textContent = '';
+        
+        // Show loading state
+        const originalText = submitButton.textContent;
+        submitButton.textContent = 'Converting...';
+        submitButton.disabled = true;
+        
+        try {
+            // Create request data
+            const requestData = {
+                value: value,
+                fromUnit: fromUnit,
+                toUnit: toUnit
+            };
+            
+            // Send API request
+            const response = await fetch(getApiUrl(CONFIG.ENDPOINTS.TOOLS.CONVERT_MASS), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            });
+            
+            // Reset button state
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
+            
+            if (!response.ok) {
+                throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Display the conversion result
+                const massConversionText = document.getElementById('massConversionText');
+                const massFormula = document.getElementById('massFormula');
+                
+                massConversionText.textContent = `${value} ${fromUnit} = ${data.result.toFixed(6)} ${toUnit}`;
+                massFormula.textContent = `Formula: ${getMassFormula(fromUnit, toUnit)}`;
+                massResult.style.display = 'block';
+            } else {
+                throw new Error(data.error || 'Failed to convert mass');
+            }
+        } catch (error) {
+            console.error('Error converting mass:', error);
+            
+            // Show error message
+            massError.textContent = 'Error: ' + (error.message || 'Please try again later');
+            massError.style.display = 'block';
+        }
+    });
+    
+    // Helper function to get temperature unit symbols
+    function getUnitSymbol(unit) {
+        switch(unit) {
+            case 'celsius':
+                return '°C';
+            case 'fahrenheit':
+                return '°F';
+            case 'kelvin':
+                return 'K';
+            default:
+                return unit;
+        }
+    }
+    
+    // Helper function to get temperature conversion formulas
+    function getTemperatureFormula(fromUnit, toUnit) {
+        if (fromUnit === toUnit) {
+            return 'No conversion needed';
+        }
+        
+        const formulas = {
+            'celsius-fahrenheit': '°F = (°C × 9/5) + 32',
+            'celsius-kelvin': 'K = °C + 273.15',
+            'fahrenheit-celsius': '°C = (°F - 32) × 5/9',
+            'fahrenheit-kelvin': 'K = (°F - 32) × 5/9 + 273.15',
+            'kelvin-celsius': '°C = K - 273.15',
+            'kelvin-fahrenheit': '°F = (K - 273.15) × 9/5 + 32'
+        };
+        
+        return formulas[`${fromUnit}-${toUnit}`] || 'Formula not available';
+    }
+    
+    // Helper function to get mass conversion formulas
+    function getMassFormula(fromUnit, toUnit) {
+        if (fromUnit === toUnit) {
+            return 'No conversion needed';
+        }
+        
+        const conversionFactors = {
+            'kg-g': '× 1000',
+            'kg-mg': '× 1,000,000',
+            'kg-lb': '× 2.20462',
+            'kg-oz': '× 35.274',
+            'g-kg': '÷ 1000',
+            'g-mg': '× 1000',
+            'g-lb': '÷ 453.592',
+            'g-oz': '÷ 28.3495',
+            'mg-kg': '÷ 1,000,000',
+            'mg-g': '÷ 1000',
+            'mg-lb': '÷ 453,592',
+            'mg-oz': '÷ 28,349.5',
+            'lb-kg': '× 0.453592',
+            'lb-g': '× 453.592',
+            'lb-mg': '× 453,592',
+            'lb-oz': '× 16',
+            'oz-kg': '× 0.0283495',
+            'oz-g': '× 28.3495',
+            'oz-mg': '× 28,349.5',
+            'oz-lb': '÷ 16'
+        };
+        
+        return `${fromUnit} to ${toUnit} ${conversionFactors[`${fromUnit}-${toUnit}`] || ''}`;
+    }
+});
+</script>
+
+<style>
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.tab-btn {
+    background-color: var(--secondary-color);
+    border: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 1rem;
+    cursor: pointer;
+    color: var(--text-color);
+    flex: 1;
+}
+
+.tab-btn.active {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.form-group.half {
+    flex: 1;
+}
+
+.result-box {
+    background-color: var(--secondary-color);
+    border-radius: 6px;
+    padding: 16px;
+    margin-top: 16px;
+}
+
+.result-text {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-bottom: 8px;
+}
+
+.formula-text {
+    color: var(--light-text);
+    font-family: monospace;
+}
+
+.conversion-result h3 {
+    color: var(--success-color);
+    margin-bottom: 8px;
+}
+
+.back-link {
+    margin-top: 24px;
+    text-align: center;
+}
+
+.back-link a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.back-link a:hover {
+    text-decoration: underline;
+}
+</style>

@@ -1,0 +1,94 @@
+<div class="container dashboard">
+  <div class="dashboard-header">
+    <h1>Welcome to QuickTools</h1>
+    <p>Select a tool to get started</p>
+  </div>
+
+  <div class="tools-grid">
+    <div class="tool-card">
+      <div class="tool-icon">
+        <i class="fas fa-file-pdf"></i>
+      </div>
+      <h3>PDF to Word</h3>
+      <p>Convert PDF documents into editable Word files</p>
+      <a href="/tools/pdf-to-word" class="tool-link">Use Tool</a>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-icon">
+        <i class="fas fa-image"></i>
+      </div>
+      <h3>Image to Text</h3>
+      <p>Extract text from images using OCR technology</p>
+      <a href="/tools/image-to-text" class="tool-link">Use Tool</a>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-icon">
+        <i class="fas fa-calculator"></i>
+      </div>
+      <h3>Calculator</h3>
+      <p>Perform basic and advanced calculations</p>
+      <a href="/tools/calculator" class="tool-link">Use Tool</a>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-icon">
+        <i class="fas fa-qrcode"></i>
+      </div>
+      <h3>QR Generator</h3>
+      <p>Create QR codes for links, text, and more</p>
+      <a href="/tools/qr-generator" class="tool-link">Use Tool</a>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-icon">
+        <i class="fas fa-exchange-alt"></i>
+      </div>
+      <h3>Currency Converter</h3>
+      <p>Convert between various world currencies</p>
+      <a href="/tools/currency-converter" class="tool-link">Use Tool</a>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-icon">
+        <i class="fas fa-thermometer-half"></i>
+      </div>
+      <h3>Unit Converter</h3>
+      <p>Convert between temperature, mass, and other units</p>
+      <a href="/tools/temperature-mass-converter" class="tool-link">Use Tool</a>
+    </div>
+  </div>
+</div>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  /* Dashboard-specific styles */
+  .tool-icon {
+    font-size: 2rem;
+    color: var(--accent-color);
+    margin-bottom: 16px;
+  }
+  
+  .tool-link {
+    display: inline-block;
+    margin-top: 8px;
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  
+  .tool-link:hover {
+    color: #3a5bef;
+    text-decoration: underline;
+  }
+  
+  .dashboard-header p {
+    color: var(--light-text);
+    margin-top: 8px;
+    font-size: 1.1rem;
+  }
+</style>

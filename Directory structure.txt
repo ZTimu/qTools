@@ -1,0 +1,60 @@
+Year\quickTools
+├── public/
+│   ├── css/
+│   │   └── style.css
+│   ├── js/
+│   │   ├── pdf-to-word.js
+│   │   ├── image-to-text.js
+│   │   ├── currency-converter.js
+│   │   ├── temperature-converter.js
+│   │   ├── qr-generator.js
+│   │   ├── password-keeper.js
+│   │   ├── calculator.js
+│   │   └── search.js
+│   └── uploads/
+│       ├── pdf/
+│       └── images/
+├── src/
+│   ├── config/
+│   │   └── database.js
+│   ├── controllers/
+│   │   ├── UserController.js
+│   │   ├── ToolController.js
+│   │   ├── AdminController.js
+│   │   └── ViewController.js
+│   ├── middleware/
+│   │   ├── auth.js
+│   │   └── upload.js
+│   ├── models/
+│   │   ├── User.js
+│   │   └── Tool.js
+│   ├── routes/
+│   │   ├── auth.js
+│   │   ├── tools.js
+│   │   └── admin.js
+│   ├── services/
+│   │   ├── UserService.js
+│   │   └── ToolService.js
+│   └── views/
+│       ├── layouts/
+│       │   └── main.handlebars
+│       ├── auth/
+│       │   ├── login.handlebars
+│       │   └── register.handlebars
+│       ├── tools/
+│       │   ├── pdf-to-word.handlebars
+│       │   ├── image-to-text.handlebars
+│       │   ├── currency-converter.handlebars
+│       │   ├── temperature-converter.handlebars
+│       │   ├── qr-generator.handlebars
+│       │   ├── password-keeper.handlebars
+│       │   └── calculator.handlebars
+│       └── admin/
+│           ├── dashboard.handlebars
+│           └── tools-management.handlebars
+├── .env
+├── .gitignore
+├── package.json
+└── server.js
+npm start dev
+npx kill-port 5000

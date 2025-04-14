@@ -1,0 +1,90 @@
+<div class="tool-container">
+    <div class="tool-header">
+        <h2>Calculator</h2>
+        <p>A powerful calculator with scientific functions</p>
+    </div>
+
+    <div class="calculator">
+        <div class="display-container">
+            <input type="text" id="input-display" class="calc-display" placeholder="Enter expression...">
+            <input type="text" id="result-display" class="calc-display" readonly placeholder="Result">
+        </div>
+        
+        <div class="keypad">
+            <table class="calc-table">
+                <tr>
+                    <td><button type="button" class="func-btn operator" onclick="calculate('sin')">sin</button></td>
+                    <td><button type="button" class="func-btn operator" onclick="calculate('cos')">cos</button></td>
+                    <td><button type="button" class="func-btn operator" onclick="calculate('tan')">tan</button></td>
+                    <td><button type="button" class="func-btn operator" onclick="calculate('sqrt')">√</button></td>
+                </tr>
+                <tr>
+                    <td><button type="button" class="func-btn operator" onclick="calculate('pow')">x²</button></td>
+                    <td><button type="button" class="func-btn operator" onclick="calculate('log')">log</button></td>
+                    <td><button type="button" class="func-btn" onclick="appendNumber('2.71828')">e</button></td>
+                    <td><button type="button" class="func-btn operator" onclick="appendOperator('%')">%</button></td>
+                </tr>
+
+                <!-- Numbers and Basic Operations -->
+                <tr>
+                    <td><button type="button" class="num-btn" onclick="appendNumber('7')">7</button></td>
+                    <td><button type="button" class="num-btn" onclick="appendNumber('8')">8</button></td>
+                    <td><button type="button" class="num-btn" onclick="appendNumber('9')">9</button></td>
+                    <td><button type="button" class="op-btn operator" onclick="appendOperator('/')">/</button></td>
+                </tr>
+                <tr>
+                    <td><button type="button" class="num-btn" onclick="appendNumber('4')">4</button></td>
+                    <td><button type="button" class="num-btn" onclick="appendNumber('5')">5</button></td>
+                    <td><button type="button" class="num-btn" onclick="appendNumber('6')">6</button></td>
+                    <td><button type="button" class="op-btn operator" onclick="appendOperator('×')">×</button></td>
+                </tr>
+                <tr>
+                    <td><button type="button" class="num-btn" onclick="appendNumber('1')">1</button></td>
+                    <td><button type="button" class="num-btn" onclick="appendNumber('2')">2</button></td>
+                    <td><button type="button" class="num-btn" onclick="appendNumber('3')">3</button></td>
+                    <td><button type="button" class="op-btn operator" onclick="appendOperator('-')">-</button></td>
+                </tr>
+                <tr>
+                    <td><button type="button" class="num-btn" onclick="appendNumber('0')">0</button></td>
+                    <td><button type="button" class="num-btn" onclick="appendNumber('.')">.</button></td>
+                    <td><button type="button" class="eq-btn equals" onclick="calculate('equals')">=</button></td>
+                    <td><button type="button" class="op-btn operator" onclick="appendOperator('+')">+</button></td>
+                </tr>
+                <tr>
+                    <td><button type="button" class="ctrl-btn clear" onclick="clearDisplay()">C</button></td>
+                    <td><button type="button" class="ctrl-btn clear" onclick="clearEntry()">CE</button></td>
+                    <td><button type="button" class="ctrl-btn" onclick="backspace()">⌫</button></td>
+                    <td><button type="button" class="ctrl-btn" onclick="toggleSign()">±</button></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <a href="/dashboard">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<script src="/js/calculator.js"></script>
+
+<style>
+    .back-link {
+        margin-top: 24px;
+        text-align: center;
+    }
+    
+    .back-link a {
+        color: var(--accent-color);
+        text-decoration: none;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .back-link a:hover {
+        text-decoration: underline;
+    }
+</style>

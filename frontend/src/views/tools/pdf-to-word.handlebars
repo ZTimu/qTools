@@ -1,0 +1,300 @@
+<div class="tool-container">
+    <div class="tool-header">
+        <h2>PDF to Word Conversion</h2>
+        <p>Convert your PDF documents to editable Word format</p>
+    </div>
+
+    <div class="tool-content">
+        <form id="pdfToWordForm" enctype="multipart/form-data" class="conversion-form">
+            <div class="form-group">
+                <label for="pdfFile">Select PDF File</label>
+                <input type="file" id="pdfFile" name="pdfFile" accept=".pdf" required>
+            </div>
+            
+            <div class="form-options">
+                <h3>Conversion Options</h3>
+                <div class="option-group">
+                    <label>
+                        <input type="checkbox" name="preserveImages" checked>
+                        Preserve Images
+                    </label>
+                </div>
+                <div class="option-group">
+                    <label>
+                        <input type="checkbox" name="preserveFormatting" checked>
+                        Preserve Formatting
+                    </label>
+                </div>
+                <div class="option-group">
+                    <label>
+                        <input type="checkbox" name="preserveTables" checked>
+                        Preserve Tables
+                    </label>
+                </div>
+            </div>
+            
+            <button type="submit" class="convert-btn">Convert to Word</button>
+        </form>
+        
+        <div class="conversion-status" style="display: none;">
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+            <p class="status-text">Converting your file...</p>
+        </div>
+        
+        <div class="conversion-result" style="display: none;">
+            <h3>Conversion Complete!</h3>
+            <p>Your file has been successfully converted.</p>
+            <a href="#" class="download-btn" id="downloadLink">Download Word Document</a>
+        </div>
+
+        <div class="error-message" style="display: none; color: var(--error-color); margin-top: 16px;"></div>
+    </div>
+    
+    <div class="back-link">
+        <a href="/dashboard">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const pdfForm = document.getElementById('pdfToWordForm');
+    const statusElement = document.querySelector('.conversion-status');
+    const resultElement = document.querySelector('.conversion-result');
+    const errorElement = document.querySelector('.error-message');
+    const submitButton = pdfForm.querySelector('button[type="submit"]');
+    const downloadLink = document.getElementById('downloadLink');
+    
+    pdfForm.addEventListener('submit', async function(event) {
+        event.preventDefault();
+        
+        // Clear previous states
+        statusElement.style.display = 'none';
+        resultElement.style.display = 'none';
+        errorElement.style.display = 'none';
+        errorElement.textContent = '';
+        
+        // Get the file input
+        const fileInput = document.getElementById('pdfFile');
+        const file = fileInput.files[0];
+        
+        // Validate file
+        if (!file) {
+            errorElement.textContent = 'Please select a PDF file to convert';
+            errorElement.style.display = 'block';
+            return;
+        }
+        
+        if (file.type !== 'application/pdf') {
+            errorElement.textContent = 'Only PDF files are allowed';
+            errorElement.style.display = 'block';
+            return;
+        }
+        
+        // Create form data
+        const formData = new FormData();
+        formData.append('pdfFile', file);
+        
+        // Add options
+        formData.append('preserveImages', document.querySelector('[name="preserveImages"]').checked);
+        formData.append('preserveFormatting', document.querySelector('[name="preserveFormatting"]').checked);
+        formData.append('preserveTables', document.querySelector('[name="preserveTables"]').checked);
+        
+        // Show loading state
+        const originalText = submitButton.textContent;
+        submitButton.textContent = 'Converting...';
+        submitButton.disabled = true;
+        statusElement.style.display = 'block';
+        
+        try {
+            // Log debugging info
+            console.log('Sending PDF for conversion:', file.name, file.size, file.type);
+            const apiUrl = getApiUrl(CONFIG.ENDPOINTS.TOOLS.PDF_TO_WORD);
+            console.log('Using API URL:', apiUrl);
+            
+            // Send the request with redirect following disabled
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                body: formData,
+                redirect: 'manual' // Don't automatically follow redirects
+            });
+            
+            // Reset button state
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
+            statusElement.style.display = 'none';
+            
+            // Log detailed response info
+            console.log('Response status:', response.status, response.statusText);
+            console.log('Response headers:', [...response.headers.entries()]);
+            console.log('Response type:', response.type);
+            
+            // Check if it's a redirect response
+            if (response.type === 'opaqueredirect' || (response.status >= 300 && response.status < 400)) {
+                console.log('Detected redirect response');
+                
+                // Extract filename from URL if possible
+                const urlParams = new URLSearchParams(response.url.split('?')[1] || '');
+                const fileName = urlParams.get('fileName');
+                
+                if (fileName) {
+                    console.log('Extracted filename from redirect:', fileName);
+                    downloadLink.href = getApiUrl(`/api/tools/download/word/${fileName}`);
+                    resultElement.style.display = 'block';
+                    return;
+                }
+                
+                // If can't extract filename, try a direct download approach
+                downloadLink.href = getApiUrl(`/api/tools/download/word/${file.name.replace('.pdf', '_converted.docx')}`);
+                resultElement.style.display = 'block';
+                return;
+            }
+            
+            if (!response.ok) {
+                // Try to get error details
+                let errorDetails = 'Unknown error';
+                try {
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        const errorData = await response.json();
+                        console.log('Error JSON response:', errorData);
+                        errorDetails = errorData.error || response.statusText;
+                    } else {
+                        errorDetails = await response.text();
+                        console.log('Error text response:', errorDetails);
+                    }
+                } catch (parseError) {
+                    console.error('Error parsing response:', parseError);
+                    errorDetails = response.statusText;
+                }
+                
+                throw new Error(`Error: ${errorDetails}`);
+            }
+            
+            // Try to parse the response as JSON
+            try {
+                const data = await response.json();
+                console.log('Conversion successful, received JSON:', data);
+                
+                if (!data.success) {
+                    throw new Error(data.error || 'Unknown error occurred');
+                }
+                
+                // Update download link
+                downloadLink.href = getApiUrl(data.downloadUrl);
+                resultElement.style.display = 'block';
+            } catch (jsonError) {
+                console.log('Response is not JSON, trying text:', jsonError);
+                
+                // If not JSON, try to handle as text
+                const text = await response.text();
+                console.log('Received text response:', text);
+                
+                // Default filename based on the input file
+                const defaultFileName = file.name.replace('.pdf', '_converted.docx');
+                downloadLink.href = getApiUrl(`/api/tools/download/word/${defaultFileName}`);
+                resultElement.style.display = 'block';
+            }
+            
+        } catch (error) {
+            console.error('Error converting PDF:', error);
+            
+            // Show error message
+            errorElement.textContent = error.message || 'Error converting file. Please try again later.';
+            errorElement.style.display = 'block';
+        }
+    });
+});
+</script>
+
+<style>
+.form-options {
+    margin: 20px 0;
+    padding: 16px;
+    background-color: var(--secondary-color);
+    border-radius: 6px;
+}
+
+.form-options h3 {
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+    color: var(--text-color);
+}
+
+.option-group {
+    margin-bottom: 10px;
+}
+
+.option-group label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.option-group input[type="checkbox"] {
+    width: auto;
+    margin-right: 8px;
+}
+
+.progress-container {
+    height: 8px;
+    background-color: var(--secondary-color);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: var(--accent-color);
+    width: 0;
+    animation: progress 2s infinite;
+}
+
+@keyframes progress {
+    0% { width: 0; }
+    50% { width: 70%; }
+    100% { width: 100%; }
+}
+
+.conversion-result h3 {
+    color: var(--success-color);
+    margin-bottom: 8px;
+}
+
+.download-btn {
+    display: inline-block;
+    background-color: var(--success-color);
+    color: white;
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    margin-top: 16px;
+    font-weight: 500;
+}
+
+.download-btn:hover {
+    background-color: #49b413;
+}
+
+.back-link {
+    margin-top: 24px;
+    text-align: center;
+}
+
+.back-link a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.back-link a:hover {
+    text-decoration: underline;
+}
+</style>

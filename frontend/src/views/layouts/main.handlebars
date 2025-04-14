@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{#if title}}{{title}} - {{/if}}QuickTools</title>
+    <link rel="stylesheet" href="/style.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts - Inter -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <!-- Global configuration -->
+    <script src="/js/config.js"></script>
+    <!-- Auth management -->
+    <script src="/js/auth.js"></script>
+    {{#if title}}
+        {{#eq title "PDF to Word Conversion"}}
+            <script src="/js/pdf-to-word.js" defer></script>
+        {{/eq}}
+        {{#eq title "QR Code Generator"}}
+            <script src="/js/qr-generator.js" defer></script>
+        {{/eq}}
+        {{#eq title "Temperature & Mass Conversion"}}
+            <script src="/js/temperature-mass-converter.js" defer></script>
+        {{/eq}}
+    {{/if}}
+</head>
+<body>
+    {{#unless hideNavbar}}
+    <header>
+        <div class="container">
+            <div class="navbar">
+                <a href="/" class="logo">QuickTools</a>
+                <ul class="nav-links">
+                    <!-- This will be populated by auth.js -->
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/register">Register</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    {{/unless}}
+    
+    <main>
+        {{{body}}}
+    </main>
+
+    {{#unless hideFooter}}
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 QuickTools. All rights reserved.</p>
+        </div>
+    </footer>
+    <style>
+        footer {
+            margin-top: auto;
+            padding: 20px 0;
+            background-color: var(--secondary-color);
+            text-align: center;
+            color: var(--light-text);
+            font-size: 0.9rem;
+        }
+    </style>
+    {{/unless}}
+</body>
+</html>

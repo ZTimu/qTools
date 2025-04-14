@@ -1,0 +1,72 @@
+<div class="tool-container">
+    <div class="tool-header">
+        <h1>Currency Converter</h1>
+        <p>Convert between different currencies with real-time rates</p>
+    </div>
+
+    <div class="tool-content">
+        <form id="currencyForm" class="conversion-form">
+            <div class="form-group">
+                <label for="amount">Amount:</label>
+                <input type="number" id="amount" name="amount" min="0.01" step="0.01" value="1" required>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="fromCurrency">From Currency:</label>
+                    <select id="fromCurrency" name="fromCurrency" required>
+                        <option value="USD">US Dollar (USD)</option>
+                        <option value="EUR">Euro (EUR)</option>
+                        <option value="GBP">British Pound (GBP)</option>
+                        <option value="JPY">Japanese Yen (JPY)</option>
+                        <option value="BDT">Bangladeshi Taka (BDT)</option>
+                        <option value="INR">Indian Rupee (INR)</option>
+                        <option value="CAD">Canadian Dollar (CAD)</option>
+                        <option value="AUD">Australian Dollar (AUD)</option>
+                        <option value="CNY">Chinese Yuan (CNY)</option>
+                        <option value="CHF">Swiss Franc (CHF)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group half">
+                    <label for="toCurrency">To Currency:</label>
+                    <select id="toCurrency" name="toCurrency" required>
+                        <option value="BDT">Bangladeshi Taka (BDT)</option>
+                        <option value="USD">US Dollar (USD)</option>
+                        <option value="EUR">Euro (EUR)</option>
+                        <option value="GBP">British Pound (GBP)</option>
+                        <option value="JPY">Japanese Yen (JPY)</option>
+                        <option value="INR">Indian Rupee (INR)</option>
+                        <option value="CAD">Canadian Dollar (CAD)</option>
+                        <option value="AUD">Australian Dollar (AUD)</option>
+                        <option value="CNY">Chinese Yuan (CNY)</option>
+                        <option value="CHF">Swiss Franc (CHF)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button type="submit" class="convert-btn">Convert</button>
+        </form>
+        
+        <div class="conversion-result" id="conversionResult" style="display: none;">
+            <h3>Conversion Result</h3>
+            <div class="result-box">
+                <p id="conversionText" class="result-text"></p>
+                <p id="exchangeRate" class="rate-text"></p>
+                <p id="lastUpdated" class="update-text"></p>
+            </div>
+        </div>
+        
+        <div class="common-rates">
+            <h3>Common Exchange Rates</h3>
+            <div class="rates-grid" id="commonRates">
+                <!-- Common rates will be populated here via JavaScript -->
+                <p>Loading common rates...</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tool-footer">
+        <a href="/dashboard" class="back-btn">Back to Dashboard</a>
+    </div>
+</div>

@@ -1,0 +1,322 @@
+<div class="admin-container">
+    <div class="admin-header">
+        <h1>Admin Panel</h1>
+        <div class="admin-actions">
+            <span>Logged in as: {{user.name}} (Admin)</span>
+            <a href="/dashboard" class="dashboard-btn">Dashboard</a>
+            <a href="/logout" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <div class="admin-content">
+        <div class="admin-sidebar">
+            <nav class="admin-nav">
+                <ul>
+                    <li><a href="#dashboard" class="active" data-section="dashboard">Dashboard</a></li>
+                    <li><a href="#users" data-section="users">User Management</a></li>
+                    <li><a href="#tools" data-section="tools">Tools Management</a></li>
+                    <li><a href="#settings" data-section="settings">System Settings</a></li>
+                    <li><a href="#logs" data-section="logs">Activity Logs</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="admin-main">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="admin-section active">
+                <h2>Admin Dashboard</h2>
+                
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <h3>Total Users</h3>
+                        <div class="stat-value">{{stats.totalUsers}}</div>
+                        <div class="stat-change positive">+{{stats.newUsers}} this week</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <h3>Active Tools</h3>
+                        <div class="stat-value">{{stats.activeTools}}</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <h3>Tool Usage</h3>
+                        <div class="stat-value">{{stats.toolUsage}}</div>
+                        <div class="stat-change positive">+{{stats.usageIncrease}}%</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <h3>System Status</h3>
+                        <div class="stat-value">{{stats.systemStatus}}</div>
+                    </div>
+                </div>
+                
+                <div class="recent-activity">
+                    <h3>Recent Activity</h3>
+                    <table class="activity-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each stats.recentActivity}}
+                            <tr>
+                                <td>{{this.user}}</td>
+                                <td>{{this.action}}</td>
+                                <td>{{this.time}}</td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <!-- User Management Section -->
+            <section id="users-section" class="admin-section">
+                <h2>User Management</h2>
+                
+                <div class="admin-actions-bar">
+                    <button id="addUserBtn" class="admin-btn">Add New User</button>
+                    <div class="search-box">
+                        <input type="text" id="userSearch" placeholder="Search users...">
+                    </div>
+                </div>
+                
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each users}}
+                        <tr>
+                            <td>{{this._id}}</td>
+                            <td>{{this.name}}</td>
+                            <td>{{this.email}}</td>
+                            <td>{{this.role}}</td>
+                            <td>{{formatDate this.createdAt}}</td>
+                            <td class="actions">
+                                <button class="edit-btn" data-id="{{this._id}}">Edit</button>
+                                <button class="delete-btn" data-id="{{this._id}}">Delete</button>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const navLinks = document.querySelectorAll('.admin-nav a');
+        const sections = document.querySelectorAll('.admin-section');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links and sections
+                navLinks.forEach(l => l.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Show corresponding section
+                const sectionId = this.getAttribute('data-section');
+                document.getElementById(`${sectionId}-section`).classList.add('active');
+            });
+        });
+    });
+</script>
+            
+            <!-- Tools Management Section -->
+            <section id="tools-section" class="admin-section">
+                <h2>Tools Management</h2>
+                
+                <div class="admin-actions-bar">
+                    <button id="addToolBtn" class="admin-btn">Add New Tool</button>
+                    <div class="search-box">
+                        <input type="text" id="toolSearch" placeholder="Search tools...">
+                    </div>
+                </div>
+                
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tool Name</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each tools}}
+                        <tr>
+                            <td>{{this._id}}</td>
+                            <td>{{this.name}}</td>
+                            <td>{{this.category}}</td>
+                            <td>{{this.status}}</td>
+                            <td class="actions">
+                                <button class="edit-btn" data-id="{{this._id}}">Edit</button>
+                                <button class="toggle-btn" data-id="{{this._id}}" data-status="{{this.status}}">
+                                    {{#if this.active}}Disable{{else}}Enable{{/if}}
+                                </button>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const navLinks = document.querySelectorAll('.admin-nav a');
+        const sections = document.querySelectorAll('.admin-section');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links and sections
+                navLinks.forEach(l => l.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Show corresponding section
+                const sectionId = this.getAttribute('data-section');
+                document.getElementById(`${sectionId}-section`).classList.add('active');
+            });
+        });
+    });
+</script>
+            
+            <!-- System Settings Section -->
+            <section id="settings-section" class="admin-section">
+                <h2>System Settings</h2>
+                
+                <form id="settingsForm" class="admin-form">
+                    <div class="form-group">
+                        <label for="siteName">Site Name:</label>
+                        <input type="text" id="siteName" name="siteName" value="{{settings.siteName}}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="siteDescription">Site Description:</label>
+                        <textarea id="siteDescription" name="siteDescription">{{settings.siteDescription}}</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="maintenanceMode">Maintenance Mode:</label>
+                        <select id="maintenanceMode" name="maintenanceMode">
+                            <option value="off" {{#if (eq settings.maintenanceMode "off")}}selected{{/if}}>Off</option>
+                            <option value="on" {{#if (eq settings.maintenanceMode "on")}}selected{{/if}}>On</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="defaultLanguage">Default Language:</label>
+                        <select id="defaultLanguage" name="defaultLanguage">
+                            <option value="en" {{#if (eq settings.defaultLanguage "en")}}selected{{/if}}>English</option>
+                            <option value="bn" {{#if (eq settings.defaultLanguage "bn")}}selected{{/if}}>Bengali</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="admin-btn">Save Settings</button>
+                </form>
+            </section>
+            
+            <!-- Activity Logs Section -->
+            <section id="logs-section" class="admin-section">
+                <h2>Activity Logs</h2>
+                
+                <div class="admin-actions-bar">
+                    <div class="filter-group">
+                        <label for="logType">Filter by Type:</label>
+                        <select id="logType">
+                            <option value="all">All</option>
+                            <option value="user">User</option>
+                            <option value="system">System</option>
+                            <option value="error">Error</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="logDate">Filter by Date:</label>
+                        <input type="date" id="logDate">
+                    </div>
+                    
+                    <button id="clearLogsBtn" class="admin-btn danger">Clear Logs</button>
+                </div>
+                
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Type</th>
+                            <th>User</th>
+                            <th>Action</th>
+                            <th>IP Address</th>
+                            <th>Date/Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each logs}}
+                        <tr class="log-{{this.type}}">
+                            <td>{{this._id}}</td>
+                            <td>{{this.type}}</td>
+                            <td>{{this.user}}</td>
+                            <td>{{this.action}}</td>
+                            <td>{{this.ipAddress}}</td>
+                            <td>{{formatDate this.createdAt}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const navLinks = document.querySelectorAll('.admin-nav a');
+        const sections = document.querySelectorAll('.admin-section');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links and sections
+                navLinks.forEach(l => l.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Show corresponding section
+                const sectionId = this.getAttribute('data-section');
+                document.getElementById(`${sectionId}-section`).classList.add('active');
+            });
+        });
+    });
+</script>

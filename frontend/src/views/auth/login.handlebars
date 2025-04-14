@@ -1,0 +1,87 @@
+<div class="auth-container">
+    <h2>Welcome Back</h2>
+    <form id="loginForm">
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="your@email.com" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="••••••••" required>
+        </div>
+        <button type="submit">Sign In</button>
+    </form>
+    <p>Don't have an account? <a href="/register">Create account</a></p>
+    <div id="errorMessage" class="error-message" style="display: none;"></div>
+</div>
+
+<!-- Include the configuration file -->
+<script src="/js/config.js"></script>
+
+<script>
+  // Event listener for the login form submission
+  document.getElementById('loginForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    // Clear any previous error messages
+    const errorMessage = document.getElementById('errorMessage');
+    errorMessage.style.display = 'none';
+    errorMessage.textContent = '';
+
+    // Get form data
+    const formData = new FormData(this);
+    const formObject = Object.fromEntries(formData.entries());
+
+    try {
+      // Show loading state on button
+      const submitButton = this.querySelector('button[type="submit"]');
+      const originalText = submitButton.textContent;
+      submitButton.textContent = 'Signing in...';
+      submitButton.disabled = true;
+
+      // Send the form data to the backend API
+      const response = await fetch(getApiUrl(CONFIG.ENDPOINTS.AUTH.LOGIN), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formObject),
+        credentials: 'include'
+      });
+
+      // Reset button state
+      submitButton.textContent = originalText;
+      submitButton.disabled = false;
+
+      // Check if response is OK before trying to parse JSON
+      if (!response.ok) {
+        throw new Error(`${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      // Store user information and token
+      if (data.token) {
+        // Store authentication data
+        localStorage.setItem('token', data.token);
+        
+        // Store user data if available
+        if (data.user) {
+          localStorage.setItem('user', JSON.stringify(data.user));
+        }
+        
+        // Add a parameter to indicate we're logged in
+        window.location.href = '/dashboard?token=' + data.token;
+      } else {
+        throw new Error('No token received from server');
+      }
+
+    } catch (error) {
+      console.error('Error during login:', error);
+      
+      // Display error to the user
+      errorMessage.textContent = 'Invalid email or password. Please try again.';
+      errorMessage.style.display = 'block';
+    }
+  });
+</script>
