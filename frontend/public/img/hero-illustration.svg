@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <!-- Background elements -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0f4ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e0e8ff;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A6CFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3a5bef;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main background -->
+  <rect width="800" height="600" fill="url(#bgGradient)" rx="20" ry="20" />
+  
+  <!-- Decorative circles -->
+  <circle cx="100" cy="100" r="80" fill="#ffffff" opacity="0.5" />
+  <circle cx="700" cy="500" r="100" fill="#ffffff" opacity="0.5" />
+  <circle cx="200" cy="450" r="60" fill="#ffffff" opacity="0.3" />
+  
+  <!-- Central workspace with tools -->
+  <rect x="150" y="100" width="500" height="400" rx="15" ry="15" fill="#ffffff" stroke="#e0e6f5" stroke-width="2" />
+  
+  <!-- Document icon -->
+  <g transform="translate(220, 150)">
+    <rect x="0" y="0" width="80" height="100" rx="5" ry="5" fill="#f5f7ff" stroke="#d0d8ee" stroke-width="2" />
+    <line x1="15" y1="25" x2="65" y2="25" stroke="#4A6CFF" stroke-width="3" />
+    <line x1="15" y1="40" x2="65" y2="40" stroke="#4A6CFF" stroke-width="3" />
+    <line x1="15" y1="55" x2="65" y2="55" stroke="#4A6CFF" stroke-width="3" />
+    <line x1="15" y1="70" x2="45" y2="70" stroke="#4A6CFF" stroke-width="3" />
+  </g>
+  
+  <!-- Calculator icon -->
+  <g transform="translate(350, 150)">
+    <rect x="0" y="0" width="80" height="100" rx="5" ry="5" fill="#f5f7ff" stroke="#d0d8ee" stroke-width="2" />
+    <rect x="10" y="10" width="60" height="20" rx="2" ry="2" fill="#e0e8ff" stroke="#d0d8ee" stroke-width="1" />
+    <g transform="translate(10, 40)">
+      <rect x="0" y="0" width="15" height="15" rx="2" ry="2" fill="#e0e8ff" stroke="#d0d8ee" stroke-width="1" />
+      <text x="7.5" y="12" font-family="Arial" font-size="12" text-anchor="middle" fill="#4A6CFF">1</text>
+    </g>
+    <g transform="translate(32.5, 40)">
+      <rect x="0" y="0" width="15" height="15" rx="2" ry="2" fill="#e0e8ff" stroke="#d0d8ee" stroke-width="1" />
+      <text x="7.5" y="12" font-family="Arial" font-size="12" text-anchor="middle" fill="#4A6CFF">2</text>
+    </g>
+    <g transform="translate(55, 40)">
+      <rect x="0" y="0" width="15" height="15" rx="2" ry="2" fill="#e0e8ff" stroke="#d0d8ee" stroke-width="1" />
+      <text x="7.5" y="12" font-family="Arial" font-size="12" text-anchor="middle" fill="#4A6CFF">3</text>
+    </g>
+    <g transform="translate(10, 60)">
+      <rect x="0" y="0" width="15" height="15" rx="2" ry="2" fill="#e0e8ff" stroke="#d0d8ee" stroke-width="1" />
+      <text x="7.5" y="12" font-family="Arial" font-size="12" text-anchor="middle" fill="#4A6CFF">4</text>
+    </g>
+    <g transform="translate(32.5, 60)">
+      <rect x="0" y="0" width="15" height="15" rx="2" ry="2" fill="#e0e8ff" stroke="#d0d8ee" stroke-width="1" />
+      <text x="7.5" y="12" font-family="Arial" font-size="12" text-anchor="middle" fill="#4A6CFF">5</text>
+    </g>
+    <g transform="translate(55, 60)">
+      <rect x="0" y="0" width="15" height="15" rx="2" ry="2" fill="#e0e8ff" stroke="#d0d8ee" stroke-width="1" />
+      <text x="7.5" y="12" font-family="Arial" font-size="12" text-anchor="middle" fill="#4A6CFF">6</text>
+    </g>
+    <g transform="translate(32.5, 80)">
+      <rect x="0" y="0" width="15" height="15" rx="2" ry="2" fill="url(#accentGradient)" stroke="#d0d8ee" stroke-width="1" />
+      <text x="7.5" y="12" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">=</text>
+    </g>
+  </g>
+  
+  <!-- QR Code icon -->
+  <g transform="translate(480, 150)">
+    <rect x="0" y="0" width="80" height="100" rx="5" ry="5" fill="#f5f7ff" stroke="#d0d8ee" stroke-width="2" />
+    <rect x="15" y="15" width="50" height="50" rx="0" ry="0" fill="none" stroke="#4A6CFF" stroke-width="2" />
+    <g transform="translate(15, 15)">
+      <rect x="5" y="5" width="10" height="10" fill="#4A6CFF" />
+      <rect x="35" y="5" width="10" height="10" fill="#4A6CFF" />
+      <rect x="5" y="35" width="10" height="10" fill="#4A6CFF" />
+      <rect x="25" y="25" width="5" height="5" fill="#4A6CFF" />
+      <rect x="20" y="15" width="5" height="5" fill="#4A6CFF" />
+      <rect x="30" y="30" width="5" height="5" fill="#4A6CFF" />
+      <rect x="15" y="20" width="5" height="5" fill="#4A6CFF" />
+    </g>
+    <text x="40" y="85" font-family="Arial" font-size="10" text-anchor="middle" fill="#4A6CFF">QR Code</text>
+  </g>
+  
+  <!-- Currency icon -->
+  <g transform="translate(220, 300)">
+    <rect x="0" y="0" width="80" height="100" rx="5" ry="5" fill="#f5f7ff" stroke="#d0d8ee" stroke-width="2" />
+    <circle cx="25" cy="30" r="15" fill="url(#accentGradient)" />
+    <text x="25" y="35" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#ffffff">$</text>
+    <circle cx="55" cy="30" r="15" fill="#e0e8ff" stroke="#4A6CFF" stroke-width="2" />
+    <text x="55" y="35" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#4A6CFF">€</text>
+    <line x1="20" y1="60" x2="60" y2="60" stroke="#4A6CFF" stroke-width="2" />
+    <polygon points="45,55 55,60 45,65" fill="#4A6CFF" />
+  </g>
+  
+  <!-- Image to text icon -->
+  <g transform="translate(350, 300)">
+    <rect x="0" y="0" width="80" height="100" rx="5" ry="5" fill="#f5f7ff" stroke="#d0d8ee" stroke-width="2" />
+    <rect x="15" y="15" width="50" height="40" rx="2" ry="2" fill="#e0e8ff" stroke="#4A6CFF" stroke-width="1" />
+    <circle cx="30" cy="25" r="5" fill="#4A6CFF" />
+    <polygon points="15,55 40,40 65,55" fill="#4A6CFF" />
+    <line x1="15" y1="70" x2="65" y2="70" stroke="#4A6CFF" stroke-width="2" />
+    <line x1="15" y1="80" x2="55" y2="80" stroke="#4A6CFF" stroke-width="2" />
+  </g>
+  
+  <!-- PDF icon -->
+  <g transform="translate(480, 300)">
+    <rect x="0" y="0" width="80" height="100" rx="5" ry="5" fill="#f5f7ff" stroke="#d0d8ee" stroke-width="2" />
+    <rect x="15" y="15" width="50" height="70" rx="2" ry="2" fill="#ffffff" stroke="#4A6CFF" stroke-width="1" />
+    <text x="40" y="50" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#4A6CFF">PDF</text>
+    <path d="M 50 60 L 60 60 L 60 70 L 65 70" fill="none" stroke="#4A6CFF" stroke-width="2" />
+    <text x="40" y="80" font-family="Arial" font-size="12" text-anchor="middle" fill="#4A6CFF">DOC</text>
+  </g>
+  
+  <!-- Connected lines -->
+  <path d="M 300 200 C 320 230, 330 230, 350 200" fill="none" stroke="#4A6CFF" stroke-width="2" stroke-dasharray="5,5" />
+  <path d="M 430 200 C 450 230, 460 230, 480 200" fill="none" stroke="#4A6CFF" stroke-width="2" stroke-dasharray="5,5" />
+  <path d="M 300 350 C 320 380, 330 380, 350 350" fill="none" stroke="#4A6CFF" stroke-width="2" stroke-dasharray="5,5" />
+  <path d="M 430 350 C 450 380, 460 380, 480 350" fill="none" stroke="#4A6CFF" stroke-width="2" stroke-dasharray="5,5" />
+  <path d="M 260 250 C 260 280, 260 280, 260 300" fill="none" stroke="#4A6CFF" stroke-width="2" stroke-dasharray="5,5" />
+  <path d="M 390 250 C 390 280, 390 280, 390 300" fill="none" stroke="#4A6CFF" stroke-width="2" stroke-dasharray="5,5" />
+  <path d="M 520 250 C 520 280, 520 280, 520 300" fill="none" stroke="#4A6CFF" stroke-width="2" stroke-dasharray="5,5" />
+  
+  <!-- Title -->
+  <text x="400" y="80" font-family="Arial" font-size="24" font-weight="bold" text-anchor="middle" fill="#4A6CFF">QuickTools Productivity Suite</text>
+</svg> 

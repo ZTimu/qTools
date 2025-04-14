@@ -1,4 +1,5 @@
 const UserService = require('../services/UserService');
+const jwt = require('jsonwebtoken');
 
 class UserController {
     // Register a new user
@@ -82,6 +83,39 @@ class UserController {
         } catch (error) {
             console.error('Get profile error:', error.message);
             res.status(500).json({ error: 'Error retrieving user profile' });
+        }
+    }
+
+    // Verify token
+    async verifyToken(req, res) {
+        try {
+            const token = req.body.token || req.header('x-auth-token');
+            
+            console.log('Token verification request received:', !!token);
+            
+            if (!token) {
+                console.log('No token provided in request');
+                return res.status(401).json({ 
+                    isAuthenticated: false, 
+                    message: 'No token provided' 
+                });
+            }
+            
+            // Verify the token
+            const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+            console.log('Token verified successfully for user:', decoded.user.name);
+            
+            return res.json({ 
+                isAuthenticated: true,
+                userId: decoded.user.id,
+                name: decoded.user.name 
+            });
+        } catch (error) {
+            console.error('Token verification failed:', error.message);
+            return res.status(401).json({ 
+                isAuthenticated: false, 
+                message: 'Invalid token'
+            });
         }
     }
 }

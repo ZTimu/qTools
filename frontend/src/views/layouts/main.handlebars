@@ -31,11 +31,13 @@
         <div class="container">
             <div class="navbar">
                 <a href="/" class="logo">QuickTools</a>
+                {{#unless hideNavLinks}}
                 <ul class="nav-links">
                     <!-- This will be populated by auth.js -->
                     <li><a href="/login">Login</a></li>
                     <li><a href="/register">Register</a></li>
                 </ul>
+                {{/unless}}
             </div>
         </div>
     </header>
@@ -48,7 +50,7 @@
     {{#unless hideFooter}}
     <footer>
         <div class="container">
-            <p>&copy; 2023 QuickTools. All rights reserved.</p>
+            <p>&copy; 2025 QuickTools. All rights reserved.</p>
         </div>
     </footer>
     <style>

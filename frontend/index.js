@@ -2,6 +2,8 @@ const express = require('express');
 const { engine } = require('express-handlebars');
 const path = require('path');
 const net = require('net');
+const fetch = require('node-fetch');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 const app = express();
@@ -28,20 +30,51 @@ app.use('/uploads', express.static(path.join(__dirname, '../backend/uploads')));
 // Setup Express
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // API Proxy configuration
 const API_URL = process.env.BACKEND_URL || 'http://localhost:5000';
 
 // Simple auth check middleware (for demo purposes)
 // In a real app, you would verify JWT token here
-const checkAuth = (req, res, next) => {
-    // Just for demonstration, consider user is logged in if there's a token query param
-    // or if the route is protected (like dashboard or tools)
-    const protectedRoutes = ['/dashboard', '/tools'];
-    const isProtectedRoute = protectedRoutes.some(route => req.path.startsWith(route));
-    
-    // Set isLoggedIn flag for templates - in a real app this would be determined by validating tokens
-    res.locals.isLoggedIn = req.query.token || isProtectedRoute;
+const checkAuth = async (req, res, next) => {
+    try {
+        // Get token from cookies, localStorage (via query param), or session
+        const token = req.query.token || req.cookies?.token;
+        
+        console.log('Auth check - Token found:', !!token);
+        
+        // Default to not logged in
+        res.locals.isLoggedIn = false;
+        
+        // If there's a token, verify it with the backend
+        if (token) {
+            console.log('Verifying token with backend');
+            const response = await fetch(`${API_URL}/api/auth/verify`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ token }),
+            });
+            
+            const data = await response.json();
+            console.log('Backend auth response:', data);
+            
+            // Set authentication status based on backend response
+            if (response.ok && data.isAuthenticated) {
+                console.log('User authenticated:', data.name);
+                res.locals.isLoggedIn = true;
+                res.locals.userName = data.name;
+            } else {
+                console.log('Token verification failed:', data.message);
+            }
+        }
+    } catch (error) {
+        console.error('Auth verification error:', error);
+        // In case of error, default to not logged in
+        res.locals.isLoggedIn = false;
+    }
     
     // Set active navigation item
     res.locals.active = {
@@ -50,35 +83,51 @@ const checkAuth = (req, res, next) => {
         register: req.path === '/register'
     };
     
+    console.log('Auth check result - isLoggedIn:', res.locals.isLoggedIn);
     next();
 };
 
 // Apply the middleware to all routes
-app.use(checkAuth);
+app.use(async (req, res, next) => {
+    await checkAuth(req, res, next);
+});
 
 // View Routes
 app.get('/', (req, res) => {
     if (res.locals.isLoggedIn) {
         res.redirect('/dashboard');
     } else {
-        res.render('auth/login', { 
-            title: 'Login',
-            hideFooter: true
+        res.render('landing', { 
+            title: 'QuickTools - Boost Your Productivity',
+            hideNavbar: true,
+            isLoggedIn: res.locals.isLoggedIn  // Pass authentication status to template
         });
     }
 });
 
 app.get('/login', (req, res) => {
+    // If already logged in, redirect to dashboard
+    if (res.locals.isLoggedIn) {
+        return res.redirect('/dashboard');
+    }
+    
     res.render('auth/login', { 
         title: 'Login',
-        hideFooter: true
+        hideFooter: true,
+        hideNavLinks: true  // Hide login/register links in navbar
     });
 });
 
 app.get('/register', (req, res) => {
+    // If already logged in, redirect to dashboard
+    if (res.locals.isLoggedIn) {
+        return res.redirect('/dashboard');
+    }
+    
     res.render('auth/register', { 
         title: 'Create Account',
-        hideFooter: true
+        hideFooter: true,
+        hideNavLinks: true  // Hide login/register links in navbar
     });
 });
 
@@ -119,10 +168,22 @@ app.get('/tools/calculator', (req, res) => {
     });
 });
 
+// Currency converter route
+app.get('/tools/currency-converter', (req, res) => {
+    res.render('tools/currency-converter', { 
+        title: 'Currency Converter' 
+    });
+});
+
 // Logout route that clears token and redirects to login
 app.get('/logout', (req, res) => {
-    // For server-side logout, just redirect to login
-    res.redirect('/login');
+    // Clear cookie if using cookie auth
+    if (req.cookies?.token) {
+        res.clearCookie('token');
+    }
+    
+    // Redirect to home page
+    res.redirect('/');
 });
 
 // API route to check token validity
@@ -196,7 +257,7 @@ const startServer = async () => {
             console.log(`Found available port: ${PORT}`);
         }
         
-        const server = app.listen(PORT)
+        const server = app.listen(PORT, '0.0.0.0')
             .on('error', (error) => {
                 console.error('Server error:', error);
                 process.exit(1);
@@ -227,4 +288,4 @@ const startServer = async () => {
 };
 
 // Start the server
-startServer(); 
+startServer();

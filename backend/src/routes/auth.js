@@ -15,4 +15,9 @@ router.get('/logout', UserController.logout);
 // Get user profile
 router.get('/profile', auth, UserController.getProfile);
 
+// @route   POST /api/auth/verify
+// @desc    Verify a token
+// @access  Public
+router.post('/verify', UserController.verifyToken);
+
 module.exports = router;
